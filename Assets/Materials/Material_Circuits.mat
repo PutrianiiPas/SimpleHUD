@@ -68,6 +68,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Parallax: 0.005
+    - _Smoothness: 0.465
     m_Colors:
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
