@@ -1,0 +1,4 @@
+repository "Setup Guide In-Editor Tutorial/Setup Guide In-Editor Tutorial@18968344598294@cloud"
+  path "/"
+    br "/main"
+    co "/main"
