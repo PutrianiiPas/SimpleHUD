@@ -944,10 +944,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: ef444925-d820-4d33-a1d3-9c4a1ce2a008
+  cloudProjectId: 7e768b57-c130-4560-b9e4-362184230c01
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Setup Guide In-Editor Tutorial
+  projectName: SimpleHUD
   organizationId: putrianiipas11
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
