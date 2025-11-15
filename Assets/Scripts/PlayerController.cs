@@ -7,57 +7,83 @@ public class PlayerController : MonoBehaviour
     public float speed = 0;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
-    public HealthBar healthBar;
-    public int maxHealth = 100;
-    public int currentHealth;
+    public GameObject loseTextObject;
+    public Timer timer;   // referensi ke Timer
+
     private Rigidbody rb;
     private int count;
     private float movementX;
     private float movementY;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public int maxHealth = 100;
+    public int currentHealth;
+    public HealthBar healthBar;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        count = 0;
-
-        SetCountText();
-        winTextObject.SetActive(false);
 
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
+
+        count = 0;
+        SetCountText();
+
+        winTextObject.SetActive(false);
+        loseTextObject.SetActive(false);
     }
 
     void Update()
     {
+        // test damage with space (optional)
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TakeDamage(10);
+            TakeDamage(20);
         }
     }
 
     void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        if (currentHealth < 0)
+            currentHealth = 0;
+
+        healthBar.SetHealth(currentHealth);
+
+        if (currentHealth == 0)
+            LoseGame();
+    }
+
+    public void AddHealth(int amount)
+    {
+        currentHealth += amount;
+
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
         healthBar.SetHealth(currentHealth);
     }
 
+    public void LoseGame()
+    {
+        loseTextObject.SetActive(true);
+
+        // stop movement
+        speed = 0;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        // stop timer
+        if (timer != null)
+            timer.isRunning = false;
+    }
+    
     void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
         movementX = movementVector.x;
         movementY = movementVector.y;
-    }
-
-    void SetCountText()
-    {
-        countText.text = "Count: " + count.ToString();
-
-        if (count >= 14)
-        {
-            winTextObject.SetActive(true);
-        }
     }
 
     private void FixedUpdate()
@@ -71,9 +97,33 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp"))
         {
             other.gameObject.SetActive(false);
-            count = count + 1;
+            count += 1;
+
+            AddHealth(10);  // pickup menambah health
 
             SetCountText();
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            TakeDamage(5);
+        }
+    }
+
+    void SetCountText()
+    {
+        countText.text = "Count: " + count.ToString();
+
+        if (count >= 15)
+        {
+            winTextObject.SetActive(true);
+
+            // stop timer when win
+            if (timer != null)
+                timer.isRunning = false;
         }
     }
 }

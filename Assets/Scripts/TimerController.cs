@@ -1,27 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class Timer : MonoBehaviour
 {
-    float currentTime;
-    public float startingTime = 10f;
+    [SerializeField] TextMeshProUGUI timerText;
+    [SerializeField] float remainingTime;
 
-    [SerializeField] Text countdownText;
-    void Start()
-    {
-        currentTime = startingTime;
-    }
+    public PlayerController playerController;
+    public bool isRunning = true;
+
     void Update()
     {
-        currentTime -= 1 * Time.deltaTime;
-        countdownText.text = currentTime.ToString();
+        if (!isRunning)
+            return;
 
-        if (currentTime <= -2)
+        if (remainingTime > 0)
         {
-            currentTime = -2;
-            // Your Code Here
+            remainingTime -= Time.deltaTime;
         }
+        else
+        {
+            remainingTime = 0;
+            timerText.color = Color.red;
+
+            isRunning = false;
+            playerController.LoseGame();   // pastikan referensi sudah di Inspector
+        }
+
+        int minutes = Mathf.FloorToInt(remainingTime / 60);
+        int seconds = Mathf.FloorToInt(remainingTime % 60);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
